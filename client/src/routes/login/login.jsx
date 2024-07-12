@@ -21,7 +21,7 @@ function Login() {
       setIsLoading(true);
       const res = await apiRequest.post("/auth/login", data);
       localStorage.setItem("user", JSON.stringify(res.data.userInfo));
-      navigeat("/");
+      navigeat("/profile");
       console.log(res.data.userInfo);
     } catch (error) {
       setError(error.response.data.message);
