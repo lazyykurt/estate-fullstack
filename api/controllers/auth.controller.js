@@ -48,9 +48,14 @@ export const login = async (req, res) => {
 
     const age = 1000 * 60 * 60 * 24 * 28; // 4 weeks
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: age,
-    });
+    const token = jwt.sign(
+      { 
+        id: user.id, 
+        isAdmin: false 
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: age }
+    );
 
     const { password: userPassword, ...userInfo } = user;
 
