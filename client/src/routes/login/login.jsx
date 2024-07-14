@@ -3,11 +3,16 @@ import { Link } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
 
 function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigeat = useNavigate();
+
+  const {updateUser} = useContext(AuthContext);
+
 
   const handleSumbit = async (e) => {
     e.preventDefault();
@@ -20,9 +25,10 @@ function Login() {
     try {
       setIsLoading(true);
       const res = await apiRequest.post("/auth/login", data);
-      localStorage.setItem("user", JSON.stringify(res.data.userInfo));
+      // localStorage.setItem("user", JSON.stringify(res.data.userInfo));
+      updateUser(res.data.userInfo);
+      console.log(res.data.message);
       navigeat("/profile");
-      console.log(res.data.userInfo);
     } catch (error) {
       setError(error.response.data.message);
     } finally {
