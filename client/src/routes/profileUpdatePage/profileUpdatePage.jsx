@@ -1,15 +1,48 @@
 import "./profileUpdatePage.scss";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import apiRequest from "../../lib/apiRequest";
+import UploadWidget from "../../components/uploadWidget/UploadWidget";
 
 function ProfileUpdatePage() {
 
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, updateUser } = useContext(AuthContext);
+
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [avatar, setAvatar] = useState(currentUser.avatar);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const { username, email, password } = Object.fromEntries(formData);
+
+    try {
+      setIsLoading(true);
+      const res = await apiRequest.put(`/users/${currentUser.id}`, {
+        username,
+        email,
+        password,
+        avatar,
+      });
+      updateUser(res.data);
+      navigate("/profile");
+    } catch (err) {
+      setError(err.response.data.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="profileUpdatePage">
       <div className="formContainer">
-        <form>
+        <form onSubmit={handleSubmit}>
           <h1>Update Profile</h1>
           <div className="item">
             <label htmlFor="username">Username</label>
@@ -33,11 +66,21 @@ function ProfileUpdatePage() {
             <label htmlFor="password">Password</label>
             <input id="password" name="password" type="password" />
           </div>
-          <button>Update</button>
+          <button disabled={isLoading}>Update</button>
+          {error && <span>error</span>}
         </form>
       </div>
       <div className="sideContainer">
-        <img src={currentUser.avatar || "/noavatar.jpg"} alt="" className="avatar" />
+        <img src={avatar || "/noavatar.jpg"} alt="" className="avatar" />
+        <UploadWidget uwConfig={{
+          cloudName: "dche2tufx",
+          uploadPreset: "estate",
+          multiple: false,
+          maxImageFileSize: 2000000,
+          folder: "avatars"
+        }}
+        setAvatar={setAvatar}
+        />
       </div>
     </div>
   );
