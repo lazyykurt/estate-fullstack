@@ -2,10 +2,17 @@ import { Link } from "react-router-dom";
 import "./card.scss";
 
 function Card({ item }) {
+  // Check if item or item.images is undefined and handle accordingly
+  if (!item || !item.images) {
+    // Option 1: Render alternative content
+    return <div>No images available</div>;
+    // Option 2: Set a default value for images
+    // item = { ...item, images: defaultImages };
+  }
   return (
     <div className="card">
       <Link to={`/${item.id}`} className="imageContainer">
-        <img src={item.img} alt="" />
+        <img src={item.images[0]} alt="" />
       </Link>
       <div className="textContainer">
         <h2 className="title">
