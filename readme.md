@@ -1,4 +1,4 @@
-# Estate 租售房
+# Estate 租售
 
 ## 前言
 ui 构建过程，在[此仓库](https://github.com/lazyykurt/estate)可以看到
